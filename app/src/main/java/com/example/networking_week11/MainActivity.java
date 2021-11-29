@@ -75,7 +75,13 @@ NetworkingService.NetworkingListener{
             public boolean onQueryTextChange(String newText) {// after each char
                 if (newText.length() >= 3) {
                     // search for cities
-                    networkingManager.searchForCities(newText);
+                    networkingManager.searchForCity(newText);
+                }
+                else {
+                    cities = new ArrayList<>(0);
+                    adapter.cityList = cities;
+                    adapter.notifyDataSetChanged();
+
                 }
                 return false;
             }
@@ -86,14 +92,20 @@ NetworkingService.NetworkingListener{
     @Override
     public void cityClicked(City selectedCity) {
         Intent intent = new Intent(this,WeatherActivity.class);
+        intent.putExtra("cityName",selectedCity.getCityName());
         startActivity(intent);
     }
 
     @Override
     public void dataListener(String josnString) {
-       cities =  jsonService.getCitiesFromJSON(josnString);
+        cities =  jsonService.getCitiesFromJSON(josnString);
         adapter = new CitiesAdapter(this,cities);
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void imageListener(Bitmap image) {
+
     }
 }

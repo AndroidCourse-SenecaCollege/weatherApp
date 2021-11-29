@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -22,7 +23,6 @@ public class JsonService {
                 int index = fullCityName.indexOf(fullCityName,',');
                 String cityName = substring(fullCityName,0,indexOf(fullCityName,','));
                 String countryName = substring(fullCityName,indexOf(fullCityName,',') + 1, fullCityName.length());
-
                 City c = new City(cityName,countryName);
                 arrayList.add(c);
             }
@@ -31,6 +31,30 @@ public class JsonService {
             e.printStackTrace();
         }
     return arrayList;
+    }
+
+    public WeatherData getWeatherData(String jsonString) {
+        WeatherData weatherData = new WeatherData();
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            JSONArray weatherArray = jsonObject.getJSONArray("weather");
+            JSONObject weathedDataObject = weatherArray.getJSONObject(0);
+            String mainWeatherValue = weathedDataObject.getString("main");
+            String iconValue = weathedDataObject.getString("icon");
+
+
+
+            JSONObject tempObject = jsonObject.getJSONObject("main");
+            Double temp = tempObject.getDouble("temp");
+
+             weatherData = new WeatherData(mainWeatherValue,iconValue,temp);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return weatherData;
     }
 
 

@@ -19,7 +19,7 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.TasksViewH
         public void cityClicked(City selectedCity);
     }
         private Context mCtx;
-        private List<City> cityList;
+        public List<City> cityList;
         cityClickListner listner;
 
         public CitiesAdapter(Context mCtx, List<City> cityList) {

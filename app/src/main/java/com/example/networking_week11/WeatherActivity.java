@@ -7,9 +7,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class WeatherActivity extends AppCompatActivity {
+public class WeatherActivity extends AppCompatActivity implements NetworkingService.NetworkingListener {
 
-
+    NetworkingService networkingManager;
+    JsonService jsonService;
     TextView cityText;
     TextView weatherText;
     ImageView imageView;
@@ -18,14 +19,32 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-//        String cityName = getIntent().getStringExtra("city");
-//
-//        cityText = findViewById(R.id.cityName);
-//        weatherText = findViewById(R.id.weather);
-//        imageView = findViewById(R.id.image);
-//        cityText.setText(cityName);
+        String cityName = getIntent().getStringExtra("cityName");
 
+        networkingManager = ((myApp)getApplication()).getNetworkingService();
+        jsonService = ((myApp)getApplication()).getJsonService();
+        networkingManager.listener = this;
+
+        networkingManager.getWeatherDataForCity(cityName);
+
+        cityText = findViewById(R.id.cityName);
+        weatherText = findViewById(R.id.weather);
+        imageView = findViewById(R.id.image);
+        cityText.setText(cityName);
+    }
+
+    @Override
+    public void dataListener(String josnString) {
+        // json data from weather API
+        // parse json
+        WeatherData data = jsonService.getWeatherData(josnString);
+        weatherText.setText(data.main + " : " +  data.temp + "");
+        networkingManager.getImageData(data.icon);
 
     }
 
+    @Override
+    public void imageListener(Bitmap image) {
+        imageView.setImageBitmap(image);
+    }
 }
