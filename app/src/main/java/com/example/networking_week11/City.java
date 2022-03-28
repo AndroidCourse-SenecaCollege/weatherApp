@@ -1,13 +1,9 @@
 package com.example.networking_week11;
 
-
-
-
 public class City {
 
     private int id;
-
-    private String cityName;
+    private String cityName;// Toronto , On, Canada
     private String country;
 
     City(){}

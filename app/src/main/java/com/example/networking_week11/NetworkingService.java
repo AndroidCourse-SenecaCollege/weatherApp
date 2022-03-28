@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,9 @@ public class NetworkingService {
     }
 
     public NetworkingListener listener;
-    public void searchForCity(String cityChars){
+
+//http://gd.geobytes.com/AutoCompleteCity?&q=toro
+    public void searchForCity(String cityChars){//tor // toro
         String urlString = cityURL + cityChars;
         connect(urlString);
     }
@@ -45,69 +48,54 @@ public class NetworkingService {
 
 
     public void getImageData(String icon){
-        String urlstr = iconURL + icon + iconURL2;
-        networkExecutorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL urlObj = new URL(urlstr);
-                    Bitmap bitmap = BitmapFactory.decodeStream((InputStream) urlObj.getContent());
-                    networkingHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            // any code here will run in main thread
-                            listener.imageListener(bitmap);
-                        }
-                    });
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
     }
 
 
     public void connect(String url){
-        networkExecutorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection httpURLConnection = null;
-                try {
-                    String jsonData = "";
-                    URL urlObj = new URL(url);
-                    httpURLConnection = (HttpURLConnection) urlObj.openConnection();
-                    httpURLConnection.setRequestMethod("GET");// post, delete, put
-                    httpURLConnection.setRequestProperty("Conent-Type","application/json");
-                    InputStream in = httpURLConnection.getInputStream();
-                    InputStreamReader reader = new InputStreamReader(in);
-                    int inputSteamData = 0;
-                    while ( (inputSteamData = reader.read()) != -1){// there is data in this stream
-                        char current = (char)inputSteamData;
-                        jsonData += current;
-                    }
-                    final String finalData = jsonData;
-                    // the data is ready
-                    networkingHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            // any code here will run in main thread
-                            listener.dataListener(finalData);
-                        }
-                    });
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                finally {
-                    httpURLConnection.disconnect();
-                }
 
-            }
-        });
+           networkExecutorService.execute(new Runnable() {
+               @Override
+               public void run() {
+                   HttpURLConnection  httpURLConnection = null;
+                   // any code here will run in background thread
+                   try {
+                       String jsonString = "";
+                       URL urlObject = new URL(url);
+                        httpURLConnection= (HttpURLConnection)urlObject.openConnection();
+                        httpURLConnection.setRequestMethod("GET");
+                        httpURLConnection.setRequestProperty("Content-Type","application/json");
 
+                        InputStream in = httpURLConnection.getInputStream();
+                        InputStreamReader reader = new InputStreamReader(in);
+                        int inputStreamData = 0;
+                        while ( (inputStreamData = reader.read()) != -1){
+                            char current = (char)inputStreamData;
+                            jsonString+= current;
+                        } // json is ready
+                       // I can send it to somewhere else to decode it
+
+                       final String finalJsonString = jsonString;
+                       networkingHandler.post(new Runnable() {
+                           @Override
+                           public void run() {
+                               listener.dataListener(finalJsonString);
+                           }
+                       });
+
+
+                   } catch (MalformedURLException e) {
+                       e.printStackTrace();
+                   } catch (IOException e) {
+                       e.printStackTrace();
+                   }
+                   finally {
+                       httpURLConnection.disconnect();
+                   }
+
+
+               }
+           });
     }
 
 }

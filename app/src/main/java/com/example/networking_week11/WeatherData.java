@@ -4,14 +4,17 @@ public class WeatherData {
 
     String main = "";
     String icon ="";
-    Double temp = 0.0;
+    double temp = 0.0;
+    double feels_like = 0.0;
 
-    public WeatherData() {
-    }
-
-    public WeatherData(String main, String icon, Double temp) {
+    public WeatherData(String main, String icon, double temp, double fl) {
         this.main = main;
         this.icon = icon;
         this.temp = temp;
+        this.feels_like = fl;
+    }
+
+    public WeatherData() {
+
     }
 }

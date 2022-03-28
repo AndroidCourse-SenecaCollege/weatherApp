@@ -7,7 +7,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class WeatherActivity extends AppCompatActivity implements NetworkingService.NetworkingListener {
+public class WeatherActivity extends AppCompatActivity
+        implements NetworkingService.NetworkingListener {
 
     NetworkingService networkingManager;
     JsonService jsonService;

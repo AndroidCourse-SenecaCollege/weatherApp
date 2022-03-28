@@ -24,8 +24,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CitiesAdapter.cityClickListner,
-NetworkingService.NetworkingListener{
+public class MainActivity extends AppCompatActivity implements
+NetworkingService.NetworkingListener,
+        CitiesAdapter.citiesClickListener{
 
     ArrayList<City> cities = new ArrayList<City>();
     RecyclerView recyclerView;
@@ -41,9 +42,8 @@ NetworkingService.NetworkingListener{
         networkingManager.listener = this;
         recyclerView = findViewById(R.id.citiesList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
         adapter = new CitiesAdapter(this,cities);
+       // adapter.listener = this;
         recyclerView.setAdapter(adapter);
         setTitle("Search for new cities..");
     }
@@ -89,23 +89,25 @@ NetworkingService.NetworkingListener{
         return true;
     }
 
-    @Override
-    public void cityClicked(City selectedCity) {
-        Intent intent = new Intent(this,WeatherActivity.class);
-        intent.putExtra("cityName",selectedCity.getCityName());
-        startActivity(intent);
-    }
+
 
     @Override
     public void dataListener(String josnString) {
         cities =  jsonService.getCitiesFromJSON(josnString);
+
         adapter = new CitiesAdapter(this,cities);
         recyclerView.setAdapter(adapter);
+        //
         adapter.notifyDataSetChanged();
     }
 
     @Override
     public void imageListener(Bitmap image) {
 
+    }
+
+    @Override
+    public void cityClicked(String cityName) {
+        // one city selected
     }
 }
