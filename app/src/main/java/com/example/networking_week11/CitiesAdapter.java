@@ -58,7 +58,7 @@ public class CitiesAdapter extends
                 super(itemView);
                 cityTextView = itemView.findViewById(R.id.cityy);
                 itemView.setOnClickListener(this);
-            }
+                    }
                     @Override
                     public void onClick(View view) {
                         listener.cityClicked(cityList.get(getAdapterPosition()).getCityName());

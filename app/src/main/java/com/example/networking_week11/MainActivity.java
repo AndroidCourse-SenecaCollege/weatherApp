@@ -108,6 +108,9 @@ NetworkingService.NetworkingListener,
 
     @Override
     public void cityClicked(String cityName) {
-        // one city selected
+        Intent intent = new Intent(this,WeatherActivity.class);
+        intent.putExtra("city",cityName);
+        startActivity(intent);
+
     }
 }

@@ -14,6 +14,14 @@ public class WeatherData {
         this.feels_like = fl;
     }
 
+    public void setTemp(double temp) {
+        this.temp = temp - 273.15;
+    }
+
+    public void setFeels_like(double feels_like) {
+        this.feels_like = feels_like - 273.15;
+    }
+
     public WeatherData() {
 
     }

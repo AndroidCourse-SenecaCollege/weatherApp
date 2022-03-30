@@ -20,7 +20,7 @@ public class WeatherActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        String cityName = getIntent().getStringExtra("cityName");
+        String cityName = getIntent().getStringExtra("city");
 
         networkingManager = ((myApp)getApplication()).getNetworkingService();
         jsonService = ((myApp)getApplication()).getJsonService();
@@ -39,9 +39,8 @@ public class WeatherActivity extends AppCompatActivity
         // json data from weather API
         // parse json
         WeatherData data = jsonService.getWeatherData(josnString);
-        weatherText.setText(data.main + " : " +  data.temp + "");
-        networkingManager.getImageData(data.icon);
-
+        weatherText.setText(data.main + " : " +  String.format("%.2f",data.temp)  + ": feels like " + String.format("%.2f",data.feels_like));
+        networkingManager.getImageData(data.icon);//
     }
 
     @Override

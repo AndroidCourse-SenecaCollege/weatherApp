@@ -19,8 +19,8 @@ import java.util.concurrent.Executors;
 public class NetworkingService {
 
     private String cityURL = "http://gd.geobytes.com/AutoCompleteCity?&q=";
-    private String weatherURL = "https://api.openweathermap.org/data/2.5/weather?q=+" ;
-    private String  weatherURL2 = "+&appid=071c3ffca10be01d334505630d2c1a9c";
+    private String weatherURL = "https://api.openweathermap.org/data/2.5/weather?q=" ;
+    private String  weatherURL2 = "&appid=071c3ffca10be01d334505630d2c1a9c";
     private String iconURL = "https://openweathermap.org/img/wn/";
     private String iconURL2 = "@2x.png";
 
@@ -48,12 +48,33 @@ public class NetworkingService {
 
 
     public void getImageData(String icon){
+        String iconurl = iconURL + icon + iconURL2;
+        networkExecutorService.execute(new Runnable() {
+            @Override
+            public void run() {
 
+                try {
+                    URL url = new URL(iconurl);
+                    Bitmap bitmap = BitmapFactory.decodeStream((InputStream)url.getContent()) ;
+                    networkingHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.imageListener(bitmap);
+                        }
+                    });
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
 
     public void connect(String url){
-
            networkExecutorService.execute(new Runnable() {
                @Override
                public void run() {
@@ -62,6 +83,8 @@ public class NetworkingService {
                    try {
                        String jsonString = "";
                        URL urlObject = new URL(url);
+                       //jsonString = ((String)urlObject.getContent());
+                       //Log.d("txt",jsonString);
                         httpURLConnection= (HttpURLConnection)urlObject.openConnection();
                         httpURLConnection.setRequestMethod("GET");
                         httpURLConnection.setRequestProperty("Content-Type","application/json");
